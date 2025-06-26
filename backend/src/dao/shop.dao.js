@@ -1,22 +1,17 @@
-// src/dao/shop.dao.js
-import { Shop } from "../models/shop.model.js";
+import mongoose from "mongoose";
 
-export const createShopDao = async (data) => {
-  return await Shop.create(data);
-};
+const shopSchema = new mongoose.Schema({
+  name: String,
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  contactNumber: String,
+  GSTIN: String,
+  address: String,
+  logoURL: String,
+  licenseStatus: String,
+  licenseExpiryDate: Date,
+  planType: { type: String, enum: ["basic","premium"], default: "basic" },
+  planExpiry: Date,
+  isActive: { type: Boolean, default: true }
+}, { timestamps: true });
 
-export const getAllShopsDao = async () => {
-  return await Shop.find().populate("owner");
-};
-
-export const getShopByIdDao = async (id) => {
-  return await Shop.findById(id).populate("owner");
-};
-
-export const updateShopDao = async (id, data) => {
-  return await Shop.findByIdAndUpdate(id, data, { new: true });
-};
-
-export const deleteShopDao = async (id) => {
-  return await Shop.findByIdAndDelete(id);
-};
+export const Shop = mongoose.model("Shop", shopSchema);
