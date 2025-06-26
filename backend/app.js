@@ -7,6 +7,7 @@ import { connectDB } from "./src/config/db.js";
 import { errorHandler } from "./src/utils/errorHandler.js";
 import morgan from "morgan";
 
+import adminRoutes from "./src/routes/admin.routes.js";
 import authRoutes from "./src/routes/auth.routes.js";
 import billRoutes from "./src/routes/bill.routes.js";
 import customerRoutes from "./src/routes/customer.routes.js";
@@ -42,6 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/bill", billRoutes);
 app.use("/api/customer", customerRoutes);

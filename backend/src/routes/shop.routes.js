@@ -8,13 +8,14 @@ import {
   updateShop,
   deleteShop
 } from "../controllers/shop.controller.js";
+import { requireRole } from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, createShop);
+router.post("/", authMiddleware, requireRole("admin", "provider"), createShop);
 router.get("/", authMiddleware, getAllShops);
 router.get("/:id", authMiddleware, getShopById);
-router.put("/:id", authMiddleware, updateShop);
-router.delete("/:id", authMiddleware, deleteShop);
+router.put("/:id", authMiddleware, requireRole("admin", "provider"), updateShop);
+router.delete("/:id", authMiddleware, requireRole("admin", "provider"), deleteShop);
 
 export default router;
