@@ -6,14 +6,13 @@ import {
   getStockSummary
 } from "../controllers/stock.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { requireRole } from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, createStockTransaction);
+router.post("/", authMiddleware, requireRole("admin"), createStockTransaction);
 router.get("/", authMiddleware, getStockTransactions);
 router.get("/product/:id", authMiddleware, getStockTransactionsByProduct);
-
-// ✅ New stock summary endpoint
-router.get("/summary/all", authMiddleware, getStockSummary);
+router.get("/summary", authMiddleware, getStockSummary);
 
 export default router;

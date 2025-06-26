@@ -23,15 +23,11 @@ export const updateKOTStatus = wrapAsync(async (req, res) => {
 });
 
 export const getPendingKOTs = wrapAsync(async (req, res) => {
-  const kotList = await getPendingKOTsService(req.user.shopId);
-  res.json({ kot: kotList });
+  const kot = await getPendingKOTsService(req.user.shopId);
+  res.status(200).json({ kot });
 });
 
 export const convertKOTToBill = wrapAsync(async (req, res) => {
-  const kotId = req.params.id;
-  const shopId = req.user.shopId;
-  const userId = req.user._id;
-
-  const bill = await convertKOTToBillService(kotId, shopId, userId);
-  res.status(201).json({ message: "Bill created from KOT", bill });
+  const bill = await convertKOTToBillService(req.params.id, req.user.shopId, req.user._id);
+  res.status(201).json({ message: "KOT converted to bill", bill });
 });

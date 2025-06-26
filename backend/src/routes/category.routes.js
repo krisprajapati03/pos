@@ -11,10 +11,10 @@ import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, createCategory);
+router.post("/", authMiddleware, requireRole("admin"), createCategory);
 router.get("/", authMiddleware, getAllCategories);
 router.get("/:id", authMiddleware, getCategoryById);
-router.put("/:id", authMiddleware, updateCategory);
-router.delete("/:id", authMiddleware, deleteCategory);
+router.put("/:id", authMiddleware, requireRole("admin"), updateCategory);
+router.delete("/:id", authMiddleware, requireRole("admin"), deleteCategory);
 
 export default router;
