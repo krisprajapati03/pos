@@ -3,7 +3,8 @@ import {
   createStockTransactionService,
   getStockTransactionsService,
   getStockTransactionsByProductService,
-  getStockSummaryService
+  getStockSummaryService,
+  getLowStockProductsService
 } from "../services/stock.service.js";
 
 export const createStockTransaction = wrapAsync(async (req, res) => {
@@ -21,8 +22,15 @@ export const getStockTransactionsByProduct = wrapAsync(async (req, res) => {
   res.status(200).json({ transactions });
 });
 
-// ✅ New: Get current stock per product
 export const getStockSummary = wrapAsync(async (req, res) => {
   const stock = await getStockSummaryService(req.user.shopId);
   res.status(200).json({ stock });
+});
+
+export const getLowStockProducts = wrapAsync(async (req, res) => {
+  const shopId = req.user.shopId;
+  const threshold = parseInt(req.query.threshold) || 5;
+
+  const products = await getLowStockProductsService(shopId, threshold);
+  res.status(200).json({ products });
 });

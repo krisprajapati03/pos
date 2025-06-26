@@ -2,7 +2,8 @@ import {
   createStockTransactionDao,
   getStockTransactionsDao,
   getStockTransactionsByProductDao,
-  getStockSummaryDao
+  getStockSummaryDao,
+  getLowStockProductsDao
 } from "../dao/stock.dao.js";
 
 export const createStockTransactionService = async (data, shopId) => {
@@ -17,7 +18,9 @@ export const getStockTransactionsByProductService = async (productId, shopId) =>
   return await getStockTransactionsByProductDao(productId, shopId);
 };
 
-// ✅ New: Live stock summary per product
 export const getStockSummaryService = async (shopId) => {
   return await getStockSummaryDao(shopId);
 };
+
+export const getLowStockProductsService = (shopId, threshold) =>
+  getLowStockProductsDao(shopId, threshold);
