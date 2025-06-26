@@ -28,7 +28,7 @@ import staffRoutes from "./src/routes/staff.routes.js";
 import reportRoutes from "./src/routes/report.routes.js";
 import shopRoutes from "./src/routes/shop.routes.js";
 import supplierRoutes from "./src/routes/supplier.routes.js";
-
+import dashboard from "./src/routes/dashboard.routes.js";
 dotenv.config();
 const app = express();
 
@@ -63,6 +63,7 @@ app.use("/api/staff", staffRoutes);
 // app.use("/api/greeting", greetingRoutes);
 app.use("/api/report", reportRoutes); //
 app.use("/api/shops", shopRoutes);
+app.use("/api/dashboard", dashboard); 
 
 // Error handler
 app.use(errorHandler);

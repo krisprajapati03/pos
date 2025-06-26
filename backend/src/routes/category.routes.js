@@ -8,6 +8,7 @@ import {
   deleteCategory,
 } from "../controllers/category.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { requireRole } from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 

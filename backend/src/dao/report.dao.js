@@ -1,6 +1,6 @@
 import Bill from "../models/bill.model.js";
 import Purchase from "../models/purchase.model.js";
-import Expense from "../models/expense.model.js";
+import {Expense} from "../models/expense.model.js";
 
 export const getReportData = async (shopId, start, end) => {
   const sale = await Bill.aggregate([
