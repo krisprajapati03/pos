@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link ,NavLink} from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+
 
 export default function Sidebar() {
   const { user } = useAuth();
-
   return (
     <div className="w-64 bg-gray-800 text-white min-h-screen p-4 space-y-4">
       <h2 className="text-xl font-bold mb-4">POS Dashboard</h2>
@@ -13,6 +13,8 @@ export default function Sidebar() {
         <>
           <Link to="/products" className="block hover:text-yellow-400">Products</Link>
           <Link to="/orders" className="block hover:text-yellow-400">Orders</Link>
+          <NavLink to="/kot/list" className="sidebar-link">KOTs</NavLink>
+
         </>
       )}
 

@@ -1,7 +1,8 @@
-import API from "./axios";
+import axios from "./axios";
 
-export const getProducts = () => API.get("/product");
-export const getProduct = (id) => API.get(`/product/${id}`);
-export const createProduct = (data) => API.post("/product", data);
-export const updateProduct = (id, data) => API.put(`/product/${id}`, data);
-export const deleteProduct = (id) => API.delete(`/product/${id}`);
+export const getProducts = () => axios.get("/product");
+export const getProduct = (id) => axios.get(`/product/${id}`);
+export const createProduct = (data) => axios.post("/product", data);
+export const updateProduct = (id, data) => axios.put(`/product/${id}`, data);
+export const deleteProduct = (id) => axios.delete(`/product/${id}`);
+export const getCategories = () => axios.get("/categories");

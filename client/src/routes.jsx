@@ -6,6 +6,9 @@ import AddProduct from "./pages/products/AddProduct";
 import EditProduct from "./pages/products/EditProduct";
 import KotPage from "./pages/kot/KotPage";
 import BillingPage from "./pages/billing/BillingPage";
+import KotList from "./pages/kot/KotList";
+import TableManagement from "./pages/table/TableManagement";
+
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./Layout";
@@ -24,6 +27,12 @@ export default function AppRoutes() {
       <Route path="/products" element={
         <ProtectedRoute role="admin">
           <Layout><ProductList /></Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/tables" element={
+        <ProtectedRoute role="admin">
+            <Layout><TableManagement /></Layout>
         </ProtectedRoute>
       } />
 
@@ -48,6 +57,12 @@ export default function AppRoutes() {
       <Route path="/billing" element={
         <ProtectedRoute role="admin">
           <Layout><BillingPage /></Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/kot/list" element={
+        <ProtectedRoute role="admin">
+            <Layout><KotList /></Layout>
         </ProtectedRoute>
       } />
     </Routes>

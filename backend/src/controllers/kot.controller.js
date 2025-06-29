@@ -4,7 +4,8 @@ import {
   getKOTByTableService,
   updateKOTStatusService,
   getPendingKOTsService,
-  convertKOTToBillService
+  convertKOTToBillService,
+  getAllKOTsService
 } from "../services/kot.service.js";
 
 export const createKOT = wrapAsync(async (req, res) => {
@@ -31,4 +32,9 @@ export const getPendingKOTs = wrapAsync(async (req, res) => {
 export const convertKOTToBill = wrapAsync(async (req, res) => {
   const bill = await convertKOTToBillService(req.params.id, req.user.shopId, req.user._id);
   res.status(201).json({ message: "KOT converted to bill", bill });
+});
+
+export const getAllKOTs = wrapAsync(async (req, res) => {
+  const kotList = await getAllKOTsService(req.user.shopId);
+  res.status(200).json({ kots: kotList });
 });

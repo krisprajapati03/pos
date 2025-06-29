@@ -1,80 +1,36 @@
+// KotPage.jsx
 import { useEffect, useState } from "react";
-import API from "../../api/axios";
+import { useSelector } from "react-redux";
+import { getProducts } from "../../api/product";
+import ProductCard from "../../components/ProductCard";
 
 export default function KotPage() {
   const [products, setProducts] = useState([]);
-  const [table, setTable] = useState("");
-  const [items, setItems] = useState([{ productId: "", quantity: 1 }]);
-
-  const loadProducts = async () => {
-    const res = await API.get("/product");
-    setProducts(res.data);
-  };
+  const cartItems = useSelector(state => state.cart.items);
 
   useEffect(() => {
-    loadProducts();
+    getProducts().then(res => setProducts(res.data.products));
   }, []);
 
-  const handleItemChange = (index, field, value) => {
-    const updated = [...items];
-    updated[index][field] = value;
-    setItems(updated);
-  };
-
-  const addItemRow = () => setItems([...items, { productId: "", quantity: 1 }]);
-  const removeItemRow = (index) => {
-    const updated = items.filter((_, i) => i !== index);
-    setItems(updated);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await API.post("/kot", { table, items });
-    alert("KOT created!");
-    setTable("");
-    setItems([{ productId: "", quantity: 1 }]);
-  };
+  const totalQty = cartItems.reduce((sum, i) => sum + i.qty, 0);
+  const totalAmount = cartItems.reduce((sum, i) => sum + (i.sellingPrice * i.qty), 0);
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto p-4">
-      <h2 className="text-xl font-bold mb-4">Create KOT</h2>
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-4">Best Seller Items</h1>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {products.map(p => (
+          <ProductCard key={p._id} product={p} />
+        ))}
+      </div>
 
-      <input
-        type="text"
-        placeholder="Table No"
-        className="w-full p-2 border mb-4"
-        value={table}
-        onChange={(e) => setTable(e.target.value)}
-        required
-      />
-
-      {items.map((item, index) => (
-        <div key={index} className="flex gap-2 mb-2">
-          <select
-            value={item.productId}
-            onChange={(e) => handleItemChange(index, "productId", e.target.value)}
-            className="w-1/2 p-2 border"
-            required
-          >
-            <option value="">Select Product</option>
-            {products.map(p => (
-              <option key={p._id} value={p._id}>{p.name}</option>
-            ))}
-          </select>
-          <input
-            type="number"
-            min={1}
-            value={item.quantity}
-            onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
-            className="w-1/4 p-2 border"
-            required
-          />
-          <button type="button" onClick={() => removeItemRow(index)} className="bg-red-500 text-white px-2">✕</button>
+      <div className="fixed bottom-0 left-0 right-0 bg-white p-3 border-t shadow-md flex justify-between items-center">
+        <div className="text-lg font-semibold">Total: ₹{totalAmount} ({totalQty} items)</div>
+        <div className="space-x-2">
+          <button className="bg-purple-600 text-white px-4 py-1 rounded">KOT</button>
+          <button className="bg-green-600 text-white px-4 py-1 rounded">Bill</button>
         </div>
-      ))}
-
-      <button type="button" onClick={addItemRow} className="bg-blue-500 text-white px-3 py-1 rounded mb-4">+ Add Item</button>
-      <button type="submit" className="bg-green-600 text-white px-6 py-2 rounded">Submit KOT</button>
-    </form>
+      </div>
+    </div>
   );
 }

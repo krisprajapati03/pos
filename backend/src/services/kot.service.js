@@ -3,7 +3,9 @@ import {
   getKOTByTableDao,
   updateKOTStatusDao,
   getPendingKOTsDao,
-  getKOTByIdDao
+  getKOTByIdDao,
+  getAllKOTsDao,
+  deleteKOTDao
 } from "../dao/kot.dao.js";
 import { Product } from "../models/product.model.js";
 import { createBillService } from "./bill.service.js";
@@ -32,7 +34,6 @@ export const convertKOTToBillService = async (kotId, shopId, userId) => {
     const product = await Product.findById(item.productId);
     if (!product) throw new Error(`Product not found: ${item.productId}`);
 
-    // 🧠 Check for stock before billing
     if (product.currentStock < item.qty) {
       throw new Error(`❌ Insufficient stock for ${product.name}. Available: ${product.currentStock}, Needed: ${item.qty}`);
     }
@@ -59,7 +60,16 @@ export const convertKOTToBillService = async (kotId, shopId, userId) => {
 
   const bill = await createBillService(billData, userId);
 
+  // Optional: update status first (can skip if deleting)
   await updateKOTStatusDao(kot._id, "billed");
 
+  // ✅ Now delete the KOT
+  await deleteKOTDao(kot._id, shopId);
+
   return bill;
+};
+
+
+export const getAllKOTsService = async (shopId) => {
+  return await getAllKOTsDao(shopId);
 };

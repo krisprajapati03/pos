@@ -18,3 +18,14 @@ export const getPendingKOTsDao = async (shopId) =>
 
 export const getKOTByIdDao = async (id, shopId) =>
   await KOT.findOne({ _id: id, shopId });
+
+export const getAllKOTsDao = async (shopId) => {
+  return await KOT.find({ shopId })
+    .sort({ createdAt: -1 })
+    .populate("tableId", "name")
+    .populate("orderItems.productId", "name");
+};
+
+export const deleteKOTDao = async (id, shopId) => {
+  return await KOT.findOneAndDelete({ _id: id, shopId });
+};
