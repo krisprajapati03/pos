@@ -1,6 +1,8 @@
 import { KOT } from "../models/kot.model.js";
 
-export const createKOTDao = async (data) => await KOT.create(data);
+export const createKOTDao = async (data) => {
+  return await KOT.create(data); // no separate shopId param needed
+};
 
 export const getKOTByTableDao = async (tableId, shopId) =>
   await KOT.find({ tableId, shopId }).sort({ createdAt: -1 });

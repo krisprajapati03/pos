@@ -32,6 +32,11 @@ export const convertKOTToBillService = async (kotId, shopId, userId) => {
     const product = await Product.findById(item.productId);
     if (!product) throw new Error(`Product not found: ${item.productId}`);
 
+    // 🧠 Check for stock before billing
+    if (product.currentStock < item.qty) {
+      throw new Error(`❌ Insufficient stock for ${product.name}. Available: ${product.currentStock}, Needed: ${item.qty}`);
+    }
+
     const total = product.sellingPrice * item.qty;
     return {
       productId: product._id,

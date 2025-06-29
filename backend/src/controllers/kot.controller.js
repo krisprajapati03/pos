@@ -9,6 +9,7 @@ import {
 
 export const createKOT = wrapAsync(async (req, res) => {
   const kot = await createKOTService(req.body, req.user.shopId);
+  console.log("KOT created:", kot);
   res.status(201).json({ message: "KOT created", kot });
 });
 
