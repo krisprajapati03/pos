@@ -26,7 +26,7 @@ export default function KotList() {
   const convertToBill = async (kotId) => {
     try {
       await axios.post(`/kot/to-bill/${kotId}`);
-      toast.success("Bill created successfully");
+      toast.success("Bill created successfully kris");
       loadKots();
     } catch (err) {
       toast.error("Failed to convert KOT");

@@ -8,10 +8,16 @@ import KotPage from "./pages/kot/KotPage";
 import BillingPage from "./pages/billing/BillingPage";
 import KotList from "./pages/kot/KotList";
 import TableManagement from "./pages/table/TableManagement";
-
-
+import StockPage from "./pages/stock/StockPage";
+import StaffPage from "./pages/shop/StaffPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./Layout";
+import ShopLogin from "./pages/shop/ShopLogin";
+import ShopDashboard from "./pages/shop/ShopDashboard";
+import ShopStaffPage from "./pages/shop/StaffPage";
+import EditShop from "./pages/shop/EditShop";
+
+
 
 export default function AppRoutes() {
   return (
@@ -60,9 +66,27 @@ export default function AppRoutes() {
         </ProtectedRoute>
       } />
 
-      <Route path="/kot/list" element={
-        <ProtectedRoute role="admin">
+      {/* <Route path="/kot/list" element={
+        <ProtectedRoute role={["admin", "staff"]}>
             <Layout><KotList /></Layout>
+        </ProtectedRoute>
+      } /> */}
+
+      <Route path="/kot/list" element={
+        <ProtectedRoute role={"admin"}>
+            <Layout><KotList /></Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/stock" element={
+        <ProtectedRoute role={"admin"}>
+          <Layout><StockPage /></Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/staff" element={
+        <ProtectedRoute role={"admin"}>
+          <Layout><StaffPage /></Layout>
         </ProtectedRoute>
       } />
     </Routes>

@@ -10,7 +10,6 @@ import {
 
 export const createKOT = wrapAsync(async (req, res) => {
   const kot = await createKOTService(req.body, req.user.shopId);
-  console.log("KOT created:", kot);
   res.status(201).json({ message: "KOT created", kot });
 });
 
@@ -31,7 +30,10 @@ export const getPendingKOTs = wrapAsync(async (req, res) => {
 
 export const convertKOTToBill = wrapAsync(async (req, res) => {
   const bill = await convertKOTToBillService(req.params.id, req.user.shopId, req.user._id);
-  res.status(201).json({ message: "KOT converted to bill", bill });
+  res.status(201).json({
+    message: "Bill created successfully",
+    bill,
+  });
 });
 
 export const getAllKOTs = wrapAsync(async (req, res) => {

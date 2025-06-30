@@ -9,5 +9,7 @@ export const getBillByIdDao = async (id) => {
 };
 
 export const getAllBillsDao = async (shopId) => {
-    return await Bill.find({ shopId: shopId }).sort({ createdAt: -1 });
+  return await Bill.find({ shopId })
+    .sort({ createdAt: -1 })
+    .populate("tableId", "tableNumber name"); // ✅ Populate table number and name
 };

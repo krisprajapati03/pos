@@ -5,7 +5,6 @@ import TableSelector from "./TableSelector";
 import axios from "../api/axios";
 import { toast } from "react-toastify";
 
-
 export default function CartBar({ onDetailsClick }) {
   const dispatch = useDispatch();
   const { items: cartItems, paymentMode } = useSelector((s) => s.cart);
@@ -16,15 +15,22 @@ export default function CartBar({ onDetailsClick }) {
   const total = cartItems.reduce((sum, item) => sum + item.sellingPrice * item.qty, 0);
 
   const handleKotClick = () => {
+    if (cartItems.length === 0) return toast.warn("Cart is empty");
     if (!selectedTable) return setShowTablePopup(true);
     submitKot(selectedTable);
   };
 
   const submitKot = async (table) => {
     try {
+
+      // if (table?.status === "reserved") {
+      //   return toast.error("Cannot add items. Table is already reserved.");
+      // }
+
       const kotBody = {
         tableId: table?._id,
         note: "",
+        paymentMode, // ✅ shared payment mode
         orderItems: cartItems.map(i => ({
           productId: i._id,
           name: i.name,
@@ -35,9 +41,7 @@ export default function CartBar({ onDetailsClick }) {
       await axios.post("/kot", kotBody);
 
       if (table) {
-        await axios.put(`/table/${table._id}`, {
-          status: "reserved"
-        });
+        await axios.put(`/table/${table._id}`, { status: "reserved" });
       }
 
       dispatch(clearCart());
@@ -50,6 +54,8 @@ export default function CartBar({ onDetailsClick }) {
   };
 
   const handleBillClick = async () => {
+    if (cartItems.length === 0) return toast.warn("Cart is empty");
+
     try {
       const res = await axios.post("/bill", {
         billNumber: "AUTO",
@@ -61,7 +67,7 @@ export default function CartBar({ onDetailsClick }) {
           total: i.qty * i.sellingPrice,
         })),
         totalAmount: total,
-        paymentMode,
+        paymentMode, // ✅ shared payment mode
         tax: 0,
         paidAmount: total,
       });
@@ -85,7 +91,8 @@ export default function CartBar({ onDetailsClick }) {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-2 shadow flex flex-col items-center sm:flex-row sm:justify-between z-40">
         <div className="font-bold text-lg">Total: ₹{total}</div>
 
-        <div className="flex gap-2 mt-2 sm:mt-0">
+        <div className="flex gap-2 mt-2 sm:mt-0 flex-wrap justify-center">
+          {/* Unified Payment Mode Toggle */}
           {["Cash", "UPI"].map((mode) => (
             <button
               key={mode}
@@ -98,7 +105,7 @@ export default function CartBar({ onDetailsClick }) {
 
           <button onClick={onDetailsClick} className="border px-3 py-1 rounded">Details</button>
           <button onClick={handleKotClick} className="bg-purple-600 text-white px-3 py-1 rounded">KOT</button>
-          <button onClick={handleBillClick} className="bg-green-600 text-white px-3 py-1 rounded">Bill</button>
+          <button onClick={handleBillClick} className="bg-green-600 text-white px-3 py-1 rounded" disabled={cartItems.length === 0}>Bill</button>
         </div>
       </div>
 

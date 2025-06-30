@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 const billSchema = new mongoose.Schema({
   shopId: { type: mongoose.Schema.Types.ObjectId, ref: "Shop", required: true },
   kotId: { type: mongoose.Schema.Types.ObjectId, ref: "KOT" },
-  billNumber: String,
+  billNumber: { type: String, required: true, unique: true },
   customerId: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
   date: Date,
   tableId: { type: mongoose.Schema.Types.ObjectId, ref: "Table" },

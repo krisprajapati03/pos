@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const kotSchema = new mongoose.Schema({
   shopId: { type: mongoose.Schema.Types.ObjectId, ref: "Shop", required: true },
   tableId: { type: mongoose.Schema.Types.ObjectId, ref: "Table", required: true },
+  paymentMode: { type: String, enum: ["Cash", "UPI"], default: "Cash" },
   orderItems: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },

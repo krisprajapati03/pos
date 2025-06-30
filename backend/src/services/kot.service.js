@@ -30,22 +30,24 @@ export const convertKOTToBillService = async (kotId, shopId, userId) => {
   const kot = await getKOTByIdDao(kotId, shopId);
   if (!kot) throw new Error("KOT not found");
 
-  const products = await Promise.all(kot.orderItems.map(async (item) => {
-    const product = await Product.findById(item.productId);
-    if (!product) throw new Error(`Product not found: ${item.productId}`);
+  const products = await Promise.all(
+    kot.orderItems.map(async (item) => {
+      const product = await Product.findById(item.productId);
+      if (!product) throw new Error(`Product not found: ${item.productId}`);
 
-    if (product.currentStock < item.qty) {
-      throw new Error(`❌ Insufficient stock for ${product.name}. Available: ${product.currentStock}, Needed: ${item.qty}`);
-    }
+      if (product.currentStock < item.qty) {
+        throw new Error(`Insufficient stock for ${product.name}`);
+      }
 
-    const total = product.sellingPrice * item.qty;
-    return {
-      productId: product._id,
-      qty: item.qty,
-      sellingPrice: product.sellingPrice,
-      total
-    };
-  }));
+      const total = product.sellingPrice * item.qty;
+      return {
+        productId: product._id,
+        qty: item.qty,
+        sellingPrice: product.sellingPrice,
+        total,
+      };
+    })
+  );
 
   const totalAmount = products.reduce((sum, p) => sum + p.total, 0);
 
@@ -56,14 +58,14 @@ export const convertKOTToBillService = async (kotId, shopId, userId) => {
     products,
     totalAmount,
     date: new Date(),
+    paymentMode: kot.paymentMode || "Cash",
+    tax: 0,
+    paidAmount: totalAmount,
   };
 
   const bill = await createBillService(billData, userId);
 
-  // Optional: update status first (can skip if deleting)
-  await updateKOTStatusDao(kot._id, "billed");
-
-  // ✅ Now delete the KOT
+  // ✅ Optionally delete KOT
   await deleteKOTDao(kot._id, shopId);
 
   return bill;

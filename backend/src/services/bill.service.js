@@ -31,14 +31,26 @@
 // };
 import mongoose from "mongoose";
 import Bill from "../models/bill.model.js";
-import {StockTransaction} from "../models/stockTransaction.model.js";
-import {Table} from "../models/table.model.js";
-import {createBillDao, getBillByIdDao, getAllBillsDao } from "../dao/bill.dao.js";
+import { StockTransaction } from "../models/stockTransaction.model.js";
+import { Table } from "../models/table.model.js";
+import { createBillDao, getBillByIdDao, getAllBillsDao } from "../dao/bill.dao.js";
 import { KOT } from "../models/kot.model.js";
+import moment from "moment"; // if not installed, use `npm install moment`
 
 export const createBillService = async (billData, userId) => {
-  // 1. Create the bill using DAO
-  const bill = await createBillDao({ ...billData, createdBy: userId });
+  // ✅ Generate Bill Number: yyyymmddNNN
+  const today = moment().format("YYYYMMDD");
+  const todayStart = moment().startOf("day").toDate();
+  const todayEnd = moment().endOf("day").toDate();
+
+  const todayCount = await Bill.countDocuments({
+    createdAt: { $gte: todayStart, $lte: todayEnd },
+  });
+
+  const billNumber = `${today}${String(todayCount + 1).padStart(3, "0")}`; // e.g., 20250629001
+
+  // 1. Create the bill using DAO with generated bill number
+  const bill = await createBillDao({ ...billData, createdBy: userId, billNumber });
 
   // 2. For each product, create a "sale" stock transaction
   const stockTransactions = bill.products.map(item => ({
@@ -47,11 +59,11 @@ export const createBillService = async (billData, userId) => {
     type: "sale",
     quantity: item.qty,
     date: bill.date || new Date(),
-    note: `Billed under #${bill.billNumber || bill._id}`
+    note: `Billed under #${bill.billNumber}`
   }));
   await StockTransaction.insertMany(stockTransactions);
 
-  // 3. Optionally, update the table status
+  // 3. Update the table status to "available"
   if (bill.tableId) {
     await Table.findByIdAndUpdate(
       bill.tableId,
@@ -59,14 +71,14 @@ export const createBillService = async (billData, userId) => {
     );
   }
 
-  // 4. If the bill is linked to a KOT, update its status
+  // 4. Mark linked KOT as billed
   if (bill.kotId) {
     await KOT.findByIdAndUpdate(bill.kotId, { status: "billed" });
   }
 
-
   return bill;
 };
+
 
 export const getAllBillsService = async (shopId) => {
     return await getAllBillsDao(shopId);
