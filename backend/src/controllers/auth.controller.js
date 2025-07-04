@@ -16,23 +16,27 @@ export const register = wrapAsync(async (req, res) => {
 });
 
 export const login = wrapAsync(async (req, res) => {
+   await connectDB(); 
   const { user, token } = await loginUser(req.body);
   res.cookie("accessToken", token, cookieOptions);
   res.status(200).json({ message: "Logged in", user });
 });
 
 export const shopLoginController = wrapAsync(async (req, res) => {
+   await connectDB(); 
   const { user, token } = await shopLoginService(req.body);
   res.cookie("accessToken", token, cookieOptions);
   res.status(200).json({ message: "staff logged in", user });
 });
 
 export const logout = wrapAsync(async (req, res) => {
+   await connectDB(); 
   res.clearCookie("accessToken");
   res.status(200).json({ message: "Logged out" });
 });
 
 export const profile = wrapAsync(async (req, res) => {
+   await connectDB(); 
   const user = await getUserByIdDao(req.user._id);
   if (!user) return res.status(404).json({ message: "User not found" });
   res.status(200).json({ user });
