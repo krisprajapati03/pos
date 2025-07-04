@@ -2,7 +2,7 @@ import { Shop } from "../models/shop.model.js";
 
 export const checkShopStatus = async (req, res, next) => {
   const shopId = req.user.shopId;
-  console.log("Checking shop status for shopId:", shopId);
+  //console.log("Checking shop status for shopId:", shopId);
   if (!shopId) return res.status(403).json({ success: false, message: "No shop context" });
 
   const shop = await Shop.findById(shopId).select("licenseStatus licenseExpiryDate");

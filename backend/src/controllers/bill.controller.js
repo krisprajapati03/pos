@@ -22,7 +22,7 @@ export const getBillById = wrapAsync(async (req, res) => {
 
 export const getAllBills = wrapAsync(async (req, res) => {
     const shopId = req.user.shopId;
-    console.log("Shop ID from user:", shopId);
+    //console.log("Shop ID from user:", shopId);
     if (!shopId) {
         return res.status(400).json({ message: "Shop ID is required" });
     }

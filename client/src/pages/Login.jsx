@@ -20,7 +20,7 @@ export default function Login() {
       login(data.user);
       toast.success("Login successful");
       const shopRes = await API.get("/shops/myshop");
-      console.log("Shop Data:", shopRes);
+      //console.log("Shop Data:", shopRes);
       if (shopRes.data.shop) {
         navigate("/dashboard");
       } else {

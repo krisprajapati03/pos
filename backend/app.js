@@ -77,5 +77,5 @@ app.use(morgan('dev'));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   await connectDB();
-  console.log(`✅ POS backend running at http://localhost:${PORT}`);
+  //console.log(`✅ POS backend running at http://localhost:${PORT}`);
 });

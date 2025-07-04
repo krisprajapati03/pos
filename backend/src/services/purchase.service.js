@@ -10,7 +10,7 @@ export const createPurchaseService = async (data, shopId) => {
   // console.log("Purchase created:", data);
   // Update stock transaction for each product
   for (const item of data.products) {
-    console.log("Product ID:", item.productId);
+    //console.log("Product ID:", item.productId);
     await createStockTransactionDao({
       shopId,
       productId: item.productId,
