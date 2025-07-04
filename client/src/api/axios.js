@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL:"https://pos-backend-sandy.vercel.app/api",
+  baseURL: import.meta.env.VITE_API_URL,  // ✅ Picks from .env
   withCredentials: true,
 });
 

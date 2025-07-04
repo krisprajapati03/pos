@@ -35,10 +35,16 @@ import dashboard from "./src/routes/dashboard.routes.js";
 const app = express();
 // Middleware
 app.use(cookieParser());
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  process.env.VERCEL_CLIENT_URL,
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173', // your frontend port
-  credentials: true,               // allow cookies
+  origin: allowedOrigins,
+  credentials: true,
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
