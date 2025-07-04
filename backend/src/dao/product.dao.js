@@ -12,16 +12,8 @@ export const createProductDao = async (data) => {
 };
 
 export const getAllProductsDao = async (shopId) => {
-  const products = await Product.find({ shopId })
-    .populate("category", "name")
-    .lean();
-
-  return products.map(product => ({
-    ...product,
-    category: product.category?.name || null
-  }));
-};
-
+  return await Product.find({ shopId }).populate("category", "name")
+}
 
 export const getProductByIdDao = async (id, shopId) => {
   const product = await Product.findOne({ _id: id, shopId })

@@ -8,20 +8,50 @@ export default function ProductCard({ product }) {
   );
 
   return (
-    <div className={`rounded-xl p-2 shadow ${item ? "bg-green-100" : "bg-white"}`}>
-      <img src={product.imageURL} alt={product.name} className="h-20 w-full object-cover rounded-md" />
-      <p className="mt-2 text-sm font-semibold truncate">{product.name}</p>
-      <p className="text-xs text-green-600 font-bold">₹{product.sellingPrice}</p>
-
-      <div className="mt-2 flex justify-center items-center gap-2">
+    <div className={`rounded-2xl p-4 shadow-lg transition-all duration-200 hover:scale-105 border ${item ? "bg-gradient-to-br from-green-100 to-green-50 border-green-300" : "bg-white border-gray-200"}`}>
+      <div className="relative">
+        <img
+          src={product.imageURL}
+          alt={product.name}
+          className="h-32 w-full object-cover rounded-xl shadow-sm"
+        />
+        {item && (
+          <span className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full shadow">
+            In Cart
+          </span>
+        )}
+      </div>
+      <div className="mt-3">
+        <p className="text-base font-bold truncate text-gray-800">{product.name}</p>
+        <p className="text-sm text-green-700 font-semibold mt-1">₹{product.sellingPrice}</p>
+      </div>
+      <div className="mt-4 flex justify-center items-center gap-3">
         {item ? (
           <>
-            <button onClick={() => dispatch(removeFromCart(product._id))} className="bg-red-500 px-2 rounded text-white">-</button>
-            <span>{item.qty}</span>
-            <button onClick={() => dispatch(addToCart(product))} className="bg-green-500 px-2 rounded text-white">+</button>
+            <button
+              onClick={() => dispatch(removeFromCart(product._id))}
+              className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-full text-white font-bold text-lg shadow"
+              aria-label="Remove one"
+            >
+              −
+            </button>
+            <span className="font-semibold text-gray-700 text-lg">{item.qty}</span>
+            <button
+              onClick={() => dispatch(addToCart(product))}
+              className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-full text-white font-bold text-lg shadow"
+              aria-label="Add one"
+            >
+              +
+            </button>
           </>
         ) : (
-          <button onClick={() => dispatch(addToCart(product))} className="bg-purple-600 text-white rounded-full px-3 py-1">+</button>
+          <button
+            onClick={() => dispatch(addToCart(product))}
+            className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-5 py-2 font-bold shadow transition"
+            aria-label="Add to cart"
+          >
+            Add to Cart
+          </button>
         )}
       </div>
     </div>

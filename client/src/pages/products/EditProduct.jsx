@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getProduct, updateProduct } from "../../api/product";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "../../api/axios"; // if you're using axios instance
+import axios from "../../api/axios";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -20,17 +20,21 @@ export default function EditProduct() {
   });
 
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    // Fetch product details
-    getProduct(id).then((res) => {
-      setForm(res.data);
-    });
-
-    // Fetch categories
-    axios.get("/categories").then((res) => {
-      setCategories(res.data.categories || []);
-    });
+    async function fetchData() {
+      setLoading(true);
+      const [productRes, catRes] = await Promise.all([
+        getProduct(id),
+        axios.get("/categories"),
+      ]);
+      setForm(productRes.data);
+      setCategories(catRes.data.categories || []);
+      setLoading(false);
+    }
+    fetchData();
   }, [id]);
 
   const handleChange = (e) => {
@@ -40,104 +44,165 @@ export default function EditProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     await updateProduct(id, form);
+    setSubmitting(false);
     alert("Product updated");
     navigate("/products");
   };
 
+  const handleBack = () => {
+    navigate("/products");
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      </div>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="p-4 max-w-xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">Edit Product</h2>
-
-      <input
-        name="name"
-        value={form.name}
-        onChange={handleChange}
-        placeholder="Product Name"
-        className="w-full p-2 border mb-2"
-        required
-      />
-
-      <select
-        name="category"
-        value={form.category}
-        onChange={handleChange}
-        className="w-full p-2 border mb-2"
-        required
+    <div className="min-h-screen bg-gray-50 py-5">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-xl rounded-xl p-5 max-w-2xl mx-auto border border-gray-200"
       >
-        <option value="">-- Select Category --</option>
-        {categories.map((cat) => (
-          <option key={cat._id} value={cat._id}>
-            {cat.name}
-          </option>
-        ))}
-      </select>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-green-700 flex items-center gap-2">
+            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
+            Edit Product
+          </h2>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded transition text-sm"
+          >
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"></path></svg>
+            Back
+          </button>
+        </div>
 
-      {/* <input
-        name="unit"
-        value={form.unit}
-        onChange={handleChange}
-        placeholder="Unit (e.g. pcs, kg)"
-        className="w-full p-2 border mb-2"
-      /> */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Product Name</label>
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Product Name"
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-400"
+              required
+            />
+          </div>
 
-      <input
-        type="number"
-        name="purchasePrice"
-        value={form.purchasePrice}
-        onChange={handleChange}
-        placeholder="Purchase Price"
-        className="w-full p-2 border mb-2"
-      />
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Category</label>
+            <select
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-400"
+              required
+            >
+              <option value="">-- Select Category --</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <input
-        type="number"
-        name="sellingPrice"
-        value={form.sellingPrice}
-        onChange={handleChange}
-        placeholder="Selling Price"
-        className="w-full p-2 border mb-2"
-      />
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Purchase Price</label>
+            <input
+              type="number"
+              name="purchasePrice"
+              value={form.purchasePrice}
+              onChange={handleChange}
+              placeholder="Purchase Price"
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-400"
+            />
+          </div>
 
-      <input
-        type="number"
-        name="taxRate"
-        value={form.taxRate}
-        onChange={handleChange}
-        placeholder="Tax Rate (%)"
-        className="w-full p-2 border mb-2"
-      />
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Selling Price</label>
+            <input
+              type="number"
+              name="sellingPrice"
+              value={form.sellingPrice}
+              onChange={handleChange}
+              placeholder="Selling Price"
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-400"
+            />
+          </div>
 
-      <input
-        type="number"
-        name="lowStockAlertQty"
-        value={form.lowStockAlertQty}
-        onChange={handleChange}
-        placeholder="Low Stock Alert Quantity"
-        className="w-full p-2 border mb-2"
-      />
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Tax Rate (%)</label>
+            <input
+              type="number"
+              name="taxRate"
+              value={form.taxRate}
+              onChange={handleChange}
+              placeholder="Tax Rate (%)"
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-400"
+            />
+          </div>
 
-      <input
-        name="imageURL"
-        value={form.imageURL}
-        onChange={handleChange}
-        placeholder="Image URL"
-        className="w-full p-2 border mb-2"
-      />
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Low Stock Alert Quantity</label>
+            <input
+              type="number"
+              name="lowStockAlertQty"
+              value={form.lowStockAlertQty}
+              onChange={handleChange}
+              placeholder="Low Stock Alert Quantity"
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-400"
+            />
+          </div>
 
-      <label className="flex items-center space-x-2 mb-4">
-        <input
-          type="checkbox"
-          name="isActive"
-          checked={form.isActive}
-          onChange={handleChange}
-        />
-        <span>Is Active</span>
-      </label>
+          <div className="md:col-span-2">
+            <label className="block text-gray-700 font-medium mb-1">Image URL</label>
+            <input
+              name="imageURL"
+              value={form.imageURL}
+              onChange={handleChange}
+              placeholder="Image URL"
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-400"
+            />
+            {form.imageURL && (
+              <img
+                src={form.imageURL}
+                alt="Product"
+                className="mt-3 h-32 object-contain rounded border"
+              />
+            )}
+          </div>
+        </div>
 
-      <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">
-        Update Product
-      </button>
-    </form>
+        <div className="flex items-center mt-6">
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="isActive"
+              checked={form.isActive}
+              onChange={handleChange}
+              className="accent-green-600"
+            />
+            <span className="text-gray-700">Is Active</span>
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          className="mt-8 w-full bg-green-600 hover:bg-green-700 text-white text-lg font-semibold px-6 py-3 rounded-lg shadow transition"
+          disabled={submitting}
+        >
+          {submitting ? "Updating..." : "Update Product"}
+        </button>
+      </form>
+    </div>
   );
 }

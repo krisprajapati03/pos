@@ -1,28 +1,30 @@
-// src/services/shop.service.js
+// ✅ Service Layer (src/services/shop.service.js)
 import {
   createShopDao,
   getAllShopsDao,
   getShopByIdDao,
   updateShopDao,
-  deleteShopDao
+  deleteShopDao,
+  getShopByOwnerIdDao
 } from "../dao/shop.dao.js";
 
-export const createShopService = async (data) => {
-  return await createShopDao(data);
+export const createShopService = async (ownerId, data) => {
+  const existing = await getShopByOwnerIdService(ownerId);
+  if (existing) throw new Error("Shop already exists");
+  return await createShopDao({ ...data, owner: ownerId });
 };
 
-export const getAllShopsService = async () => {
-  return await getAllShopsDao();
-};
+export const getAllShopsService = async () => 
+  await getAllShopsDao();
 
-export const getShopByIdService = async (id) => {
-  return await getShopByIdDao(id);
-};
+export const getShopByIdService = async (id) => 
+  await getShopByIdDao(id);
 
-export const updateShopService = async (id, data) => {
-  return await updateShopDao(id, data);
-};
+export const updateShopService = async (id, data) => 
+  await updateShopDao(id, data);
 
-export const deleteShopService = async (id) => {
-  return await deleteShopDao(id);
-};
+export const deleteShopService = async (id) => 
+  await deleteShopDao(id);
+
+export const getShopByOwnerIdService = async (ownerId) => 
+  await getShopByOwnerIdDao(ownerId);

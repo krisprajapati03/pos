@@ -13,10 +13,11 @@ export const getAllExpensesService = async (shopId) => {
   return await getAllExpensesDao(shopId);
 };
 
-export const updateExpenseService = async (id, data) => {
-  return await updateExpenseDao(id, data);
+export const updateExpenseService = async (id, data, shopId) => {
+  return await updateExpenseDao(id, data, shopId);
 };
 
-export const deleteExpenseService = async (id) => {
-  return await deleteExpenseDao(id);
+export const deleteExpenseService = async (id, shopId) => {
+  return await deleteExpenseDao(id, shopId);
 };
+

@@ -25,14 +25,20 @@ export const updateExpense = wrapAsync(async (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ success: false, message: "Forbidden: Admins only" });
   }
-  const updated = await updateExpenseService(req.params.id, req.body);
-  res.json({ message: "Expense updated", expense: updated });
+  const updated = await updateExpenseService(req.params.id, req.body, req.user.shopId);
+  if (!updated) {
+    return res.status(404).json({ success: false, message: "Expense not found" });
+  }
+  res.json({ success: true, message: "Expense updated", expense: updated });
 });
 
 export const deleteExpense = wrapAsync(async (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ success: false, message: "Forbidden: Admins only" });
   }
-  await deleteExpenseService(req.params.id);
-  res.json({ message: "Expense deleted" });
+  const deleted = await deleteExpenseService(req.params.id, req.user.shopId);
+  if (!deleted) {
+    return res.status(404).json({ success: false, message: "Expense not found" });
+  }
+  res.json({ success: true, message: "Expense deleted" });
 });

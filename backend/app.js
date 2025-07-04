@@ -1,6 +1,7 @@
 // app.js
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./src/config/db.js";
@@ -30,9 +31,8 @@ import reportRoutes from "./src/routes/report.routes.js";
 import shopRoutes from "./src/routes/shop.routes.js";
 import supplierRoutes from "./src/routes/supplier.routes.js";
 import dashboard from "./src/routes/dashboard.routes.js";
-dotenv.config();
-const app = express();
 
+const app = express();
 // Middleware
 app.use(cookieParser());
 app.use(cors({
@@ -63,7 +63,7 @@ app.use("/api/money-in", moneyInRoutes); //
 app.use("/api/money-out", moneyOutRoutes); //
 app.use("/api/staff", staffRoutes);
 // app.use("/api/greeting", greetingRoutes);
-app.use("/api/report", reportRoutes); //
+app.use("/api/reports", reportRoutes); //
 app.use("/api/shops", shopRoutes);
 app.use("/api/dashboard", dashboard); 
 

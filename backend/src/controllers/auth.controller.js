@@ -1,9 +1,10 @@
 import wrapAsync from "../utils/tryCatchWapper.js";
-import { registerUser, loginUser } from "../services/auth.service.js";
+import { registerUser, loginUser, shopLoginService } from "../services/auth.service.js";
 import { getUserByIdDao } from "../dao/auth.dao.js";
 
 const cookieOptions = {
   httpOnly: true,
+  secure: false,
   sameSite: "Lax",
   maxAge: 7 * 24 * 60 * 60 * 1000
 };
@@ -18,6 +19,12 @@ export const login = wrapAsync(async (req, res) => {
   const { user, token } = await loginUser(req.body);
   res.cookie("accessToken", token, cookieOptions);
   res.status(200).json({ message: "Logged in", user });
+});
+
+export const shopLoginController = wrapAsync(async (req, res) => {
+  const { user, token } = await shopLoginService(req.body);
+  res.cookie("accessToken", token, cookieOptions);
+  res.status(200).json({ message: "staff logged in", user });
 });
 
 export const logout = wrapAsync(async (req, res) => {
