@@ -1,6 +1,8 @@
 import wrapAsync from "../utils/tryCatchWapper.js";
 import { registerUser, loginUser, shopLoginService } from "../services/auth.service.js";
 import { getUserByIdDao } from "../dao/auth.dao.js";
+import { connectDB } from "../config/db.js";  
+
 
 const cookieOptions = {
   httpOnly: true,
