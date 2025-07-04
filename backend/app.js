@@ -66,6 +66,10 @@ app.use("/api/staff", staffRoutes);
 app.use("/api/reports", reportRoutes); //
 app.use("/api/shops", shopRoutes);
 app.use("/api/dashboard", dashboard); 
+// Hello World route for non-frontend usage
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
 
 // Error handler
 app.use(errorHandler);
@@ -77,5 +81,5 @@ app.use(morgan('dev'));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   await connectDB();
-  //console.log(`✅ POS backend running at http://localhost:${PORT}`);
+  console.log(`✅ POS backend running at http://localhost:${PORT}`);
 });
